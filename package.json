@@ -23,12 +23,13 @@
     "mongoose": "^5.3.16",
     "multer": "^1.4.1",
     "sharp": "^0.25.4",
+    "utm-latlng": "^1.0.6",
     "validator": "^10.9.0"
   },
   "devDependencies": {
     "env-cmd": "^8.0.2",
     "jest": "^23.6.0",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.19.4",
     "supertest": "^3.4.1"
   }
 }

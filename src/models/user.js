@@ -4,6 +4,25 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const Product = require('./product')
 
+const ubicacion = new mongoose.Schema({
+  Easting:{
+    type:Number,
+    required:true
+  },
+  Northing:{
+    type:Number,
+    required:true
+  },
+  ZoneNumber:{
+    type:Number,
+    required:true
+  },
+  ZoneLetter:{
+    type:String,
+    required:true
+  }
+})
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -11,7 +30,7 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     surname:{
-      type: Stirng,
+      type: String,
       required: true,
       trim: true
     },
@@ -42,10 +61,7 @@ const userSchema = new mongoose.Schema({
       type:String,
       required:true
     },
-    ubicacion:{
-      type: String,
-      required: true
-    },
+    ubicacion:ubicacion,
     telephone:{
       type: Number,
       required: true,
