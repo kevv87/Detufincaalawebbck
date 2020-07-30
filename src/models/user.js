@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema({
     },
     ubicacion:ubicacion,
     telephone:{
-      type: Number,
+      type: String,
       required: true,
     },
     tokens: [{
