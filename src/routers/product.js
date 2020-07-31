@@ -4,12 +4,8 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/products', auth, async (req, res) => {
-    const product = new Product({
-        ...req.body,
-        owner: req.user._id
-    })
-
+router.post('/products', auth.authProductor, async (req, res) => {  //Esto agrega un nuevo tipo de producto
+    const product = new Product(req.body)
     try {
         await product.save()
         res.status(201).send(product)
@@ -31,7 +27,7 @@ function popularProductos(closeProductores){
         })
 }
 
-router.get('/products',auth, async(req,res)=>{
+router.get('/products',auth.authUser, async(req,res)=>{
     try {
         const closeProductores = await User.find({tipo:"productor",region:req.user.region}).exec()
         const x = await popularProductos(closeProductores)
@@ -45,7 +41,7 @@ router.get('/products',auth, async(req,res)=>{
 // GET /products?completed=true
 // GET /products?limit=10&skip=20
 // GET /products?sortBy=createdAt:desc
-router.get('/MyProducts', auth, async (req, res) => {
+router.get('/MyProducts', auth.authUser, async (req, res) => {
     const match = {}
     const sort = {}
 
@@ -74,7 +70,7 @@ router.get('/MyProducts', auth, async (req, res) => {
     }
 })
 
-router.get('/products/:id', auth, async (req, res) => {
+router.get('/products/:id', auth.authUser, async (req, res) => {
     const _id = req.params.id
 
     try {
@@ -90,7 +86,7 @@ router.get('/products/:id', auth, async (req, res) => {
     }
 })
 
-router.patch('/products/:id', auth, async (req, res) => {
+router.patch('/products/:id', auth.authUser, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['description', 'completed']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -114,7 +110,7 @@ router.patch('/products/:id', auth, async (req, res) => {
     }
 })
 
-router.delete('/products/:id', auth, async (req, res) => {
+router.delete('/products/:id', auth.authUser, async (req, res) => {
     try {
         const product = await Product.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
 

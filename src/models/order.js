@@ -14,7 +14,7 @@ const itemSchema = new mongoose.Schema({
         required: true,
         ref: 'Consumer'
     },
-    productId: {
+    productId: {  // TODO: Quitar maybe, preguntar a Juancho.
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Product'

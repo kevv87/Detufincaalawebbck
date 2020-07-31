@@ -1,29 +1,18 @@
 const mongoose = require('mongoose')
 
-const taskSchema = new mongoose.Schema({
-    description: {
-        type: String,
-        required: true,
-        trim: true
-    },
+const productSchema = new mongoose.Schema({
     name:{
       type:String,
       required: true
     },
-    price: {
-        type: Number,
-        default: false,
-        required: true
-    },
-    owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+    units:{
+      type:String,
+      required:true
     }
 }, {
     timestamps: true
 })
 
-const Product = mongoose.model('Product', taskSchema)
+const Product = mongoose.model('Product', productSchema)
 
 module.exports = Product

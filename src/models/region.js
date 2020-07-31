@@ -9,6 +9,6 @@ const regionSchema = new mongoose.Schema({
     timestamps: true
 })
 
-const Region = mongoose.model('Region', taskSchema)
+const Region = mongoose.model('Region', regionSchema)
 
-module.exports = Category
+module.exports = Region
