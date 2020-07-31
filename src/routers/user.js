@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
 const User = require('../models/user')
+const Region = require('../models/region')
 const auth = require('../middleware/auth')
 const utmObj = require('utm-latlng')
 const utm = new utmObj()
@@ -9,15 +10,14 @@ const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
 router.post('/users', async (req, res) => {
-
     req.body.ubicacion = utm.convertLatLngToUtm(req.body.ubicacion.lat, req.body.ubicacion.lng, 100)
+    req.body.region = await Region.findOne(req.body.region.name)
     const user = new User(req.body)
     console.log(user);
     try {
         await user.save()
         sendWelcomeEmail(user.email, user.name)
-        const token = await user.generateAuthToken()
-        res.status(201).send({ user, token })
+        res.status(201).send({ user })
     } catch (e) {
         console.log(e);
         res.status(400).send(e)

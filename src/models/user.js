@@ -57,12 +57,9 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-    tipo:{
-      type:String,
-      required:true
-    },
     region:{
-      type:String,
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'Region',
       required:true
     },
     ubicacion:ubicacion,

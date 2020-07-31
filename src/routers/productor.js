@@ -12,7 +12,6 @@ const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
 router.post('/productores', async (req, res) => {
-
     req.body.ubicacion = utm.convertLatLngToUtm(req.body.ubicacion.lat, req.body.ubicacion.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
     const productor = new Productor(req.body)

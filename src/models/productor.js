@@ -36,6 +36,7 @@ const productorSchema = new mongoose.Schema({
     },
     username:{
       type:String,
+      unique:true,
       required:true,
       trim:true
     },

@@ -1,6 +1,8 @@
 const express = require('express')
 const Product = require('../models/product')
 const User = require('../models/user')
+const Productor = require('../models/productor')
+const Region = require('../models/region')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
@@ -14,27 +16,69 @@ router.post('/products', auth.authProductor, async (req, res) => {  //Esto agreg
     }
 })
 
-function popularProductos(closeProductores){
-  return new Promise(resolve=>{
+async function popularTodosProductos(closeProductores){
           const products = []
           for(var i=0;i<closeProductores.length;i++){
-            const product = Product.find({owner:closeProductores[i]._id}).exec()
-            products.push(product)
-            console.log(products);
+            const stock = closeProductores[i].stock
+            for (var j =0;j<stock.length;j++){
+              const product = await Product.findOne({_id:stock[j].productId})
+              products.push(product)
+            }
           }
-          //console.log(products);
-          resolve(products)
-        })
+          let uniqProdName = []
+          let uniqProd = []
+          products.forEach((item, i) => {
+            if(!uniqProdName.includes(item.name)){
+              uniqProdName.push(item.name)
+              uniqProd.push(item)
+            }
+          });
+          return uniqProd
+        }
+
+async function popularSpecificProductos(closeProductores, nameProduct){
+  const productores = []
+  const product = await Product.findOne({name:nameProduct})
+  if(product == null){
+    throw "No existe el producto"
+  }
+  var productor = {}
+  var stock = []
+  for(var i=0;i<closeProductores.length;i++){
+    productor = closeProductores[i]
+    stock = productor.stock
+    for(var j=0;j<stock.length;j++){
+      if(String(stock[j].productId) == String(product._id)){ // Para realizar una comparacion de ids exacta es mejor pasarlos a strings
+        productores.push(productor)
+        //console.log("p");
+      }
+    }
+  }
+  let uniqProdName = []
+  let uniqProductores = []
+  productores.forEach((item, i) => {
+    if(!uniqProdName.includes(item.name)){
+      uniqProdName.push(item.name)
+      uniqProductores.push(item)
+    }
+  });
+  return uniqProductores
 }
 
-router.get('/products',auth.authUser, async(req,res)=>{
+router.get('/products',auth.authUser, async(req,res)=>{  // Retorna lo que hay disponible
     try {
-        const closeProductores = await User.find({tipo:"productor",region:req.user.region}).exec()
-        const x = await popularProductos(closeProductores)
-        res.send(x)
+      const closeProductores = await Productor.find({region:req.user.region._id}).exec()
+      if(req.query.producto == null){
+        res.status(201).send(await popularTodosProductos(closeProductores) )
+      }else{
+        res.status(201).send(await popularSpecificProductos(closeProductores, req.query.producto))
+      }
     } catch (e) {
-      console.log(e);
-      res.status(500).send()
+      if(e == "No existe el producto"){
+        res.status(400).send(e)
+      }else{
+        res.status(500).send()
+      }
     }
 })
 
