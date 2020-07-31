@@ -21,4 +21,16 @@ router.post('/region',async(req,res)=>{
 })
 
 
+
+
+router.get('/region', async(req,res)=>{
+  const regiones = await Region.find({})
+  try{
+    res.status(200).send(regiones)
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
+
 module.exports = router

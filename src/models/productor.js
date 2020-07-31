@@ -29,12 +29,12 @@ const productorSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    surname:{
+    lastname:{
       type: String,
       required: true,
       trim: true
     },
-    username:{
+    email:{
       type:String,
       unique:true,
       required:true,
@@ -112,8 +112,8 @@ productorSchema.methods.generateAuthToken = async function () {
     return token
 }
 
-productorSchema.statics.findByCredentials = async (username, password) => {
-    const user = await Productor.findOne({ username })
+productorSchema.statics.findByCredentials = async (email, password) => {
+    const user = await Productor.findOne({ email })
 
     if (!user) {
         throw new Error('Unable to login')
