@@ -20,9 +20,19 @@ const itemSchema = new mongoose.Schema({
         ref: 'Product'
     },
     items:[{
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Item'
+        quantity: {
+            type: Number,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        },
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Product'
+        }
     }]
 }, {
     timestamps: true
