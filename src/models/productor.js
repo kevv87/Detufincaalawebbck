@@ -54,6 +54,7 @@ const productorSchema = new mongoose.Schema({
     stock:
       [{
       price: Number,
+      name:String,
       productId: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'Product',

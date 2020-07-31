@@ -75,7 +75,8 @@ router.get('/products',auth.authUser, async(req,res)=>{  // Retorna lo que hay d
       }
     } catch (e) {
       if(e == "No existe el producto"){
-        res.status(400).send(e)
+        e = {error:"No existe el producto"}
+        res.status(404).send(e)
       }else{
         res.status(500).send()
       }
@@ -85,13 +86,9 @@ router.get('/products',auth.authUser, async(req,res)=>{  // Retorna lo que hay d
 // GET /products?completed=true
 // GET /products?limit=10&skip=20
 // GET /products?sortBy=createdAt:desc
-router.get('/MyProducts', auth.authUser, async (req, res) => {
+router.get('/MyProducts', auth.authProductor, async (req, res) => {
     const match = {}
     const sort = {}
-
-    if (req.query.completed) {
-        match.completed = req.query.completed === 'true'
-    }
 
     if (req.query.sortBy) {
         const parts = req.query.sortBy.split(':')
@@ -99,40 +96,37 @@ router.get('/MyProducts', auth.authUser, async (req, res) => {
     }
 
     try {
-        await req.user.populate({
-            path: 'products',
-            match,
-            options: {
-                limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip),
-                sort
-            }
-        }).execPopulate()
-        res.send(req.user.products)
+        res.send(req.user.stock)
     } catch (e) {
         res.status(500).send()
     }
 })
 
-router.get('/products/:id', auth.authUser, async (req, res) => {
-    const _id = req.params.id
+router.get('/products/:id', auth.authProductor, async (req, res) => {
+      const _id = req.params.id
 
     try {
-        const product = await Product.findOne({ _id, owner: req.user._id })
+        const stock = req.user.stock
+        const product = stock.find(element=>
+          String(_id) == String(element._id)
+        )
+
+        console.log(product);
 
         if (!product) {
             return res.status(404).send()
         }
 
-        res.send(product)
+        res.status(201).send(product)
     } catch (e) {
         res.status(500).send()
     }
 })
 
-router.patch('/products/:id', auth.authUser, async (req, res) => {
+router.patch('/products/:id', auth.authProductor, async (req, res) => {
+        const _id = req.params.id
     const updates = Object.keys(req.body)
-    const allowedUpdates = ['description', 'completed']
+    const allowedUpdates = ['price']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
@@ -140,29 +134,47 @@ router.patch('/products/:id', auth.authUser, async (req, res) => {
     }
 
     try {
-        const product = await Product.findOne({ _id: req.params.id, owner: req.user._id})
+        var indexFound = 0
+        const product = req.user.stock.find((element)=>
+          String(element._id) == String(_id)
+        )
 
         if (!product) {
             return res.status(404).send()
         }
 
         updates.forEach((update) => product[update] = req.body[update])
-        await product.save()
+        req.user.stock[indexFound] = product
+        await req.user.save()
         res.send(product)
     } catch (e) {
         res.status(400).send(e)
     }
 })
 
-router.delete('/products/:id', auth.authUser, async (req, res) => {
+router.delete('/products/:id', auth.authProductor, async (req, res) => {
+    const _id = req.params.id
     try {
-        const product = await Product.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
+        req.user.stock = req.user.stock.filter((element)=>{
+          String(element._id) != String(_id)
+        })
 
-        if (!product) {
-            res.status(404).send()
-        }
+        await req.user.save()
 
-        res.send(product)
+        return res.status(200).send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+router.delete('/products', auth.authProductor, async (req, res) => {
+    const _id = req.params.id
+    try {
+        req.user.stock = []
+
+        await req.user.save()
+
+        return res.status(200).send()
     } catch (e) {
         res.status(500).send()
     }
