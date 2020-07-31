@@ -57,6 +57,10 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    tipo:{
+      type:String,
+      required:true
+    },
     region:{
       type:String,
       required:true

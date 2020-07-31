@@ -1,5 +1,6 @@
 const express = require('express')
 const Product = require('../models/product')
+const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
@@ -17,12 +18,27 @@ router.post('/products', auth, async (req, res) => {
     }
 })
 
-router.get('/products', async(req,res)=>{
+function popularProductos(closeProductores){
+  return new Promise(resolve=>{
+          const products = []
+          for(var i=0;i<closeProductores.length;i++){
+            const product = Product.find({owner:closeProductores[i]._id}).exec()
+            products.push(product)
+            console.log(products);
+          }
+          //console.log(products);
+          resolve(products)
+        })
+}
+
+router.get('/products',auth, async(req,res)=>{
     try {
-        const products = await Product.find({})
-        res.send(products)
+        const closeProductores = await User.find({tipo:"productor",region:req.user.region}).exec()
+        const x = await popularProductos(closeProductores)
+        res.send(x)
     } catch (e) {
-        res.status(500).send()
+      console.log(e);
+      res.status(500).send()
     }
 })
 
