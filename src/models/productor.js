@@ -51,6 +51,15 @@ const productorSchema = new mongoose.Schema({
             }
         }
     },
+    phone:{
+      type:String,
+      required:true
+    }
+    ,
+    score:{
+      type:Number,
+      required:false
+    },
     stock:
       [{
       price: Number,
@@ -85,11 +94,17 @@ const productorSchema = new mongoose.Schema({
     timestamps: true
 })
 
-productorSchema.virtual('products', {  // La idea de que sea virtual es que se popule solo cuando es necesario
+productorSchema.virtual('entregasPendientes',{
+  ref:'Item',
+  foreignField: 'productorId',
+  localField: '_id'
+})
+
+/*productorSchema.virtual('products', {  // La idea de que sea virtual es que se popule solo cuando es necesario
     ref: 'Product',
     localField: '_id',
     foreignField: 'owner'
-})
+})*/
 
 productorSchema.methods.toJSON = function () {
     const user = this
