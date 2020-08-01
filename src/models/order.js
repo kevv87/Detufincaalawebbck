@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 
 const itemSchema = new mongoose.Schema({
-    state: {
-        type: String,
-        required: true,
-    },
     limitDate: {
         type: Date,
         required: true,
@@ -12,27 +8,12 @@ const itemSchema = new mongoose.Schema({
     consumerId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Consumer'
-    },
-    productId: {  // TODO: Quitar maybe, preguntar a Juancho.
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Product'
+        ref: 'User'
     },
     items:[{
-        quantity: {
-            type: Number,
-            required: true,
-        },
-        price: {
-            type: Number,
-            required: true,
-        },
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'Product'
-        }
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'Item',
+      required:true  
     }]
 }, {
     timestamps: true
