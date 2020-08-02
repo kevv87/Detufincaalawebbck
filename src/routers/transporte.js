@@ -25,7 +25,8 @@ router.get('/transporte', async (req,res)=>{
         for(var k=0;k<orders[j].items.length;k++){
           const item = await Item.findOne({_id:orders[j].items[k]})
           if(item.state=="pendingConfirm"){
-            items.push(item)
+            await item.populate({path:'requester'}).execPopulate()
+            items.push(item.toJSON({virtuals:true}))
           }
         }
       }
