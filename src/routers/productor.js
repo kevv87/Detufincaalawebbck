@@ -195,7 +195,7 @@ router.get('/productores/orders', auth.authProductor, async(req,res)=>{
     if(req.query.state == null){
       await req.user.populate({
         path:'ordenes'
-      })
+      }).execPopulate()
     }else{
       await req.user.populate({
         path:'ordenes',
