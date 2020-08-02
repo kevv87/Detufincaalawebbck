@@ -125,6 +125,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
         throw new Error('Unable to login')
     }
 
+    console.log(user);
     return user
 }
 

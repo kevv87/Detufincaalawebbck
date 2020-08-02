@@ -17,9 +17,10 @@ const router = new express.Router()
 
 router.get('/usersAll', async (req, res)=>{
   try{
-    const productor = Productor.find({})
+    const productor = await Productor.find({})
     res.status(200).send(users)
   }catch(e){
+    console.log(e);
     res.status(500).send()
   }
 })
