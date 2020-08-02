@@ -76,11 +76,7 @@ const productorSchema = new mongoose.Schema({
       ref:'Region',
       required:true
     },
-    ubicacion:{type:ubicacion,required:true},
-    telephone:{
-      type: String,
-      required: true,
-    },
+    location:{type:ubicacion,required:true},
     tokens: [{
         token: {
             type: String,
@@ -128,7 +124,7 @@ productorSchema.methods.generateAuthToken = async function () {
 }
 
 productorSchema.statics.findByCredentials = async (email, password) => {
-    const user = await Productor.findOne({ email })
+    const user = await Productor.findOne({email})
 
     if (!user) {
         throw new Error('Unable to login')

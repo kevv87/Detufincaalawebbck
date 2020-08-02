@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
       ref:'Region',
       required:true
     },
-    ubicacion:ubicacion,
+    location:ubicacion,
     telephone:{
       type: String,
       required: true,

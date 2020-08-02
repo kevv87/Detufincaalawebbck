@@ -14,7 +14,7 @@ const router = new express.Router()
 
 // Login, logout y signup
 router.post('/users', async (req, res) => {
-    req.body.ubicacion = utm.convertLatLngToUtm(req.body.ubicacion.lat, req.body.ubicacion.lng, 100)
+    req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
     const user = new User(req.body)
     console.log(user);

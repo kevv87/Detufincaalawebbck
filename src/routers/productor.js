@@ -12,7 +12,7 @@ const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
 router.post('/productores', async (req, res) => {
-    req.body.ubicacion = utm.convertLatLngToUtm(req.body.ubicacion.lat, req.body.ubicacion.lng, 100)
+    req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
     const productor = new Productor(req.body)
     console.log(productor);
@@ -49,7 +49,7 @@ router.post('/productores/producto', auth.authProductor, async(req,res)=>{
 
 router.post('/productores/login', async (req, res) => {
     try {
-        const productor = await Productor.findByCredentials(req.body.username, req.body.password)  // TODO: Cambiar esto a otra cosa
+        const productor = await Productor.findByCredentials(req.body.email, req.body.password)  // TODO: Cambiar esto a otra cosa
         const token = await productor.generateAuthToken()
         res.send({ productor, token })
     } catch (e) {
