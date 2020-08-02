@@ -51,6 +51,10 @@ const productorSchema = new mongoose.Schema({
             }
         }
     },
+    role:{
+      type:String,
+      required:true
+    },
     phone:{
       type:String,
       required:true
