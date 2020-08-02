@@ -28,6 +28,14 @@ const itemSchema = new mongoose.Schema({
   }
 })
 
+// TODO: Hacer un presave que avise a los productores de alguna manera.
+itemSchema.pre('save', async function(next){
+  const item = this
+
+  console.log("Avisar a productor:" + item.productorId + " de su nueva orden");
+
+})
+
 const Item = mongoose.model('Item', itemSchema)
 
 module.exports = Item

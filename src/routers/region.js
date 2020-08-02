@@ -21,8 +21,6 @@ router.post('/region',async(req,res)=>{
 })
 
 
-
-
 router.get('/region', async(req,res)=>{
   const regiones = await Region.find({})
   try{

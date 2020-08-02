@@ -3,12 +3,16 @@ const multer = require('multer')
 const sharp = require('sharp')
 const User = require('../models/user')
 const Region = require('../models/region')
+const Item = require('../models/item')
+const Order = require('../models/order')
 const auth = require('../middleware/auth')
 const utmObj = require('utm-latlng')
 const utm = new utmObj()
 const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
+
+// Login, logout y signup
 router.post('/users', async (req, res) => {
     req.body.ubicacion = utm.convertLatLngToUtm(req.body.ubicacion.lat, req.body.ubicacion.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
@@ -58,6 +62,8 @@ router.post('/users/logoutAll', auth.authUser, async (req, res) => {
     }
 })
 
+
+// My info
 router.get('/users/me', auth.authUser, async (req, res) => {
     res.send(req.user)
 })
@@ -131,6 +137,40 @@ router.get('/users/:id/avatar', async (req, res) => {
     } catch (e) {
         res.status(404).send()
     }
+})
+
+// Carrito y ordenes
+router.post('/users/carrito', auth.authUser, async(req,res)=>{
+  try{
+
+    const newItems = []
+    var productor = {}
+    var stock = {}
+    var item = {}
+    // El request body es ua lista de stock, quantity
+    var i = 0
+    for (i=0;i<req.body.items.length;i++){
+      reqStock = req.body.items[i].stock
+      productor = await Productor.findOne({stock:reqStock})  // Devuelve los productores cuyo stock incluye reqStock
+      item = new Item({
+        productorId:productor._id,
+        productId:reqStock.productId,
+        quantity:req.body[i].quantity,
+        totalPrice:req.body[i].quantity*reqStock.price,
+        state:"Pendiente confirmacion"
+      })
+      newItems.push(item)
+      await item.save()
+    }
+    const order = new Order({
+      limitDate: req.body.limitDate,
+      consumerId: user._id,
+      items:newItems
+    })
+    await order.save()
+  }catch(e){
+    res.status(500).send(e);
+  }
 })
 
 module.exports = router
