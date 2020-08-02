@@ -3,6 +3,8 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const Product = require('./product')
+const Productor = require('./productor')
+const Order = require('./order')
 
 const ubicacion = new mongoose.Schema({
   Easting:{
@@ -112,6 +114,10 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
+userSchema.methods.newSupplier = async function(newProductor, order) {
+  console.log("Nuevo productor!" + newProductor.name + " para orden "+ order._id);
+}
+
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
 
@@ -125,7 +131,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
         throw new Error('Unable to login')
     }
 
-    console.log(user);
+    //console.log(user);
     return user
 }
 

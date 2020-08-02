@@ -238,4 +238,37 @@ router.patch('/productores/orders/:id', auth.authProductor, async(req,res)=>{
   }
 })
 
+// ?findOther=true, trata de encontrar otro Productor
+router.delete('/productores/orders/:id', auth.authProductor, async(req,res)=>{
+  try{
+    const item = await Item.findOne({productorId:req.user._id,_id:req.params.id})
+    if(!item){
+      res.status(404).send({reason:"Orden no existente"})
+      return
+    }
+    if(item.state!="pendingConfirm"){
+      res.stats(403).send({reason:"La orden ya se confirmo"})
+      return
+    }
+      const region = req.user.region
+      const potentialProductor = await Productor.find({region:region})
+      const newProductor = potentialProductor.find(element => !item.ignoreProductors.includes(element._id))
+
+      if(!newProductor){  // No encontro un nuevo productor
+        await Item.deleteOne({productorId:req.user._id,_id:req.params.id})
+        res.status(202).send()
+        return
+      }
+
+      item.reassign(newProductor)
+      await item.save()
+      res.status(200).send(newProductor)
+      return
+
+  }catch(e){
+    console.log(e);
+    res.status(500).send()
+  }
+})
+
 module.exports = router

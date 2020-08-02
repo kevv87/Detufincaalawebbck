@@ -168,10 +168,13 @@ router.post('/users/carrito', auth.authUser, async(req,res)=>{
       item = new Item({
         productorId:productor._id,
         productId:reqStock.productId,
+        userId:req.user._id,
         quantity:req.body.items[i].quantity,
         totalPrice:req.body.items[i].quantity*reqStock.price,
-        state:"pendingConfirm"
+        state:"pendingConfirm",
+        ignoreProductors:[]
       })
+      item.ignoreProductors.push(productor._id)
       newItems.push(item)
       await item.save()
     }
