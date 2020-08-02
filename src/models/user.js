@@ -73,6 +73,11 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
+    kind:{
+      type:String,
+      required:true
+    }
+    ,
     avatar: {
         type: Buffer
     }
@@ -80,10 +85,10 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
-userSchema.virtual('products', {
-    ref: 'Product',
+userSchema.virtual('orders', {
+    ref: 'Order',
     localField: '_id',
-    foreignField: 'owner'
+    foreignField: 'consumerId'
 })
 
 userSchema.methods.toJSON = function () {
