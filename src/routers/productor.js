@@ -223,7 +223,7 @@ router.get('/productores/orders/:id', auth.authProductor, async(req,res)=>{
 router.patch('/productores/orders/:id', auth.authProductor, async(req,res)=>{
   try{
     const item = await Item.findOne({productorId:req.user._id,_id:req.params.id})
-    const estados = ["pendingConfirm","pendingDelivery"]
+    const estados = ["pendingConfirm","pendingTransport"]
     if(!estados.includes(req.body.state)){  // Si no es uno de los aceptados..
       res.status(404).send()
       return

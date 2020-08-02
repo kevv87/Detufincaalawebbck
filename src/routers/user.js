@@ -214,6 +214,26 @@ router.get('/users/orders/:id', auth.authUser, async(req,res)=>{
   }
 })
 
+// Para confirmar un producto
+router.patch('/users/:id', auth.authTransport, async (req,res)=>{
+  try{
+    const item = await Item.findOne({_id:req.params.id, userId:req.user._id})
+    if(!item){
+      res.status(404).send()
+      return
+    }else if(item.state != "pendingConfirm"){
+      res.status(403).send({reason:"El pedido no esta esperando ser confirmado"})
+      return
+    }
+
+    item.state = "end"
+    await item.save()
+    res.send()
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
 router.delete('/users/orders/:idOrder', auth.authUser, async(req,res)=>{
   try{
     const order = await Order.findOne({consumerId:req.user._id, _id:req.params.idOrder})

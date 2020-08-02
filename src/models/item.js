@@ -22,6 +22,12 @@ const itemSchema = new mongoose.Schema({
     ref:'User',
     required:true
   },
+  transportId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Transportation',
+    required:false
+  }
+  ,
   quantity:{
     type:Number,
     required:true
@@ -37,10 +43,7 @@ const itemSchema = new mongoose.Schema({
   ignoreProductors:[{
     type:mongoose.Schema.Types.ObjectId,
     required:false
-  }],
-  ubicacion:{
-
-  }
+  }]
 })
 
 // TODO: Hacer un presave que avise a los productores de alguna manera.
@@ -66,6 +69,12 @@ itemSchema.methods.reassign = async function(newProductor){
 itemSchema.virtual('requester',{
   ref:'User',
   localField:'userId',
+  foreignField:'_id'
+})
+
+itemSchema.virtual('provider',{
+  ref:'Productor',
+  localField:'productorId',
   foreignField:'_id'
 })
 
