@@ -227,6 +227,12 @@ router.patch('/users/:id', auth.authTransport, async (req,res)=>{
     }
 
     item.state = "end"
+    if(req.body.score){
+      const productor = await Productor.findOne({_id:item.productorId})
+      if(productor){
+        productor.score = (productor.score + req.body.score)/2
+      }
+    }
     await item.save()
     res.send()
   }catch(e){
