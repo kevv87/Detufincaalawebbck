@@ -24,6 +24,19 @@ router.get('/usersAll', async (req, res)=>{
   }
 })
 
+router.post('/number', async(req,res)=>{
+  try{
+    const productor = Productor.find({phone:req.phone})
+    if(!productor){
+      res.status(404).send()
+      return
+    }
+    res.status(200).send(productor)
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
 
 router.post('/productores', async (req, res) => {
     req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
