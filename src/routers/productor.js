@@ -12,6 +12,19 @@ const utm = new utmObj()
 const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
+
+//DEV TOOLS QUITAR
+
+router.get('/usersAll', async (req, res)=>{
+  try{
+    const productor = Productor.find({})
+    res.status(200).send(users)
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
+
 router.post('/productores', async (req, res) => {
     req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)

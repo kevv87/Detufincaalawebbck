@@ -13,6 +13,16 @@ const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
 
+// Dev tools, ELIMINAR
+router.get('/usersAll', async (req, res)=>{
+  try{
+    const users = User.find({})
+    res.status(200).send(users)
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
 // Login, logout y signup
 router.post('/users', async (req, res) => {
     req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
