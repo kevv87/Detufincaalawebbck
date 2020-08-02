@@ -90,7 +90,7 @@ const productorSchema = new mongoose.Schema({
     timestamps: true
 })
 
-productorSchema.virtual('entregasPendientes',{
+productorSchema.virtual('orders',{
   ref:'Item',
   foreignField: 'productorId',
   localField: '_id'

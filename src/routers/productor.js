@@ -5,6 +5,7 @@ const sharp = require('sharp')
 const Productor = require('../models/productor')
 const Product = require('../models/product')
 const Region = require('../models/region')
+const Item = require('../models/item')
 const auth = require('../middleware/auth')
 const utmObj = require('utm-latlng')
 const utm = new utmObj()
@@ -155,6 +156,59 @@ router.get('/productores/:id/avatar', async (req, res) => {
     } catch (e) {
         res.status(404).send()
     }
+})
+
+
+// Ordenes y pedidos
+// /productores/orders?state:pendingConfirm
+// /productores/orders?state:pendingDelivery
+// /productores/orders?state:end
+router.get('/productores/orders', auth.authProductor, async(req,res)=>{
+  try{
+    if(req.query.state == null){
+      await req.user.populate({
+        path:'ordenes'
+      })
+    }else{
+      await req.user.populate({
+        path:'ordenes',
+        match:{state:req.query.state}
+      }).execPopulate()
+   }
+    res.status(200).send(req.user.ordenes)
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
+router.get('/productores/orders/:id', auth.authProductor, async(req,res)=>{
+  try{
+    await req.user.populate({
+      path:'orders',
+      match:{_id:req.params.id,state:req.query.state}
+    }).execPopulate()
+    res.status(200).send(req.user.ordenes)
+  }catch(e){
+    res.status(500).send()
+  }
+})
+
+router.patch('/productores/orders/:id', auth.authProductor, async(req,res)=>{
+  try{
+    const item = await Item.findOne({productorId:req.user._id,_id:req.params.id})
+    const estados = ["pendingConfirm","pendingDelivery"]
+    if(!estados.includes(req.body.state)){  // Si no es uno de los aceptados..
+      res.status(404).send()
+      return
+    }
+    item.state = req.body.state
+    console.log(item);
+    await item.save()
+    res.status(200).send()
+  }catch(e){
+    console.log(e);
+    res.status(500).send()
+  }
 })
 
 module.exports = router
