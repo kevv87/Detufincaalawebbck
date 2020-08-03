@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const Productor = require('../models/productor')
+const Transport = require('../models/transportation')
 
 const authProductor = async (req, res, next) => {
     try {
@@ -53,6 +54,7 @@ const authTransport = async (req, res, next) => {
         req.user = user
         next()
     } catch (e) {
+        console.log(e);
         res.status(401).send({ error: 'Please authenticate.' })
     }
 }

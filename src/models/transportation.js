@@ -106,7 +106,7 @@ transportationSchema.methods.generateAuthToken = async function () {
 }
 
 transportationSchema.statics.findByCredentials = async (email, password) => {
-    const user = await Productor.findOne({email})
+    const user = await Transportation.findOne({email})
 
     if (!user) {
         throw new Error('Unable to login')
