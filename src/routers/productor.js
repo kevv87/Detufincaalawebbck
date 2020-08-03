@@ -219,11 +219,14 @@ router.get('/productores/orders', auth.authProductor, async(req,res)=>{
       }).execPopulate()
     }else{
       await req.user.populate({
-        path:'ordenes',
-        match:{state:req.query.state}
+        path:'orders'/*,
+        match:{state:req.query.state}*/
       }).execPopulate()
-   } 
-    res.status(200).send(req.user.ordenes)
+      console.log(req.user._id);
+      console.log(req.user.orders);
+   }
+    //console.log(req.query.state);
+    res.status(200).send(req.user.orders)
   }catch(e){
     res.status(500).send()
   }

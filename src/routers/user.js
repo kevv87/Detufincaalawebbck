@@ -168,8 +168,12 @@ router.post('/users/carrito', auth.authUser, async(req,res)=>{
     var i = 0
     for (i=0;i<req.body.items.length;i++){
       reqStock = req.body.items[i].stock
-      //console.log(reqStock);
+      console.log(reqStock);
       productor = await Productor.findOne({stock:reqStock})  // Devuelve los productores cuyo stock incluye reqStock
+      if(!productor){
+        res.status(404).send({reason:"No existe un productor con este producto"})
+        return
+      }
       //console.log(productor);
       item = new Item({
         productorId:productor._id,
