@@ -62,17 +62,32 @@ router.post('/productores', async (req, res) => {
 router.post('/productores/producto', auth.authProductor, async(req,res)=>{
   try{
     const tipoProducto = await Product.findOne({name:req.body.name})
-    const producto = {}
-    producto.price = req.body.price
-    producto.productId = tipoProducto._id
-    producto.name = tipoProducto.name
-    producto.units = tipoProducto.units
-    var stock = req.user.stock
-    if(stock == null){
-      stock = []
+    if(!tipoProducto){
+      res.status(404).send({reason:"No existe el producto"})
     }
-    stock.push(producto)
-    req.user.stock = stock
+    var producto = {}
+    //producto.name = tipoProducto.name
+
+    req.user.stock.forEach((item, i) => {
+      if(tipoProducto.name == item.name){
+        item.price = req.body.price
+        producto = item
+      }
+    });
+
+    if(producto == {}){
+      producto.price = req.body.price
+      producto.productId = tipoProducto._id
+      producto.name = tipoProducto.name
+      producto.units = tipoProducto.units
+      var stock = req.user.stock
+      if(stock == null){
+        stock = []
+      }
+      stock.push(producto)
+      req.user.stock = stock
+    }
+
     await req.user.save()
     res.status(201).send()
   }catch(e){
