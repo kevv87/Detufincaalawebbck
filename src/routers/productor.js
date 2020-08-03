@@ -15,10 +15,10 @@ const router = new express.Router()
 
 //DEV TOOLS QUITAR
 
-router.get('/usersAll', async (req, res)=>{
+router.get('/productorsAll', async (req, res)=>{
   try{
     const productor = await Productor.find({})
-    res.status(200).send(users)
+    res.status(200).send(productor)
   }catch(e){
     console.log(e);
     res.status(500).send()
@@ -222,6 +222,9 @@ router.get('/productores/orders', auth.authProductor, async(req,res)=>{
         path:'ordenes',
         match:{state:req.query.state}
       }).execPopulate()
+   }
+   if(!req.user.ordenes){
+     req.user.ordenes = []
    }
     res.status(200).send(req.user.ordenes)
   }catch(e){
