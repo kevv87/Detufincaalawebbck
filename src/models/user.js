@@ -79,11 +79,6 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
-    kind:{
-      type:String,
-      required:true
-    }
-    ,
     avatar: {
         type: Buffer
     }

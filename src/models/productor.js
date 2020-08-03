@@ -37,7 +37,6 @@ const productorSchema = new mongoose.Schema({
     email:{
       type:String,
       unique:true,
-      required:true,
       trim:true
     },
     password: {
@@ -57,7 +56,8 @@ const productorSchema = new mongoose.Schema({
     },
     phone:{
       type:String,
-      required:true
+      required:true,
+      unique:true
     }
     ,
     score:{
@@ -120,7 +120,7 @@ productorSchema.methods.toJSON = function () {
 productorSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
-
+    console.log(token);
     user.tokens = user.tokens.concat({ token })
     await user.save()
 
