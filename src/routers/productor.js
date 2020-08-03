@@ -25,7 +25,7 @@ router.get('/usersAll', async (req, res)=>{
   }
 })
 
-router.post('/number', async(req,res)=>{
+router.post('/number', async(req,res)=>{  // INSECURITY HERE
   try{
     console.log(req.body.phone);
     const productor = await Productor.findOne({phone:req.body.phone})
@@ -45,10 +45,10 @@ router.post('/productores', async (req, res) => {
     req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
     const productor = new Productor(req.body)
-    console.log(productor);
+    const token = await productor.generateAuthToken()
     try {
         await productor.save()
-        res.status(201).send({ productor})
+        res.status(201).send({ productor, token:token})
     } catch (e) {
         console.log(e);
         res.status(400).send(e)

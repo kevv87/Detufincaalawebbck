@@ -28,11 +28,12 @@ router.post('/users', async (req, res) => {
     req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
     const user = new User(req.body)
+    const token = await user.generateAuthToken()
     console.log(user);
     try {
         await user.save()
         sendWelcomeEmail(user.email, user.name)
-        res.status(201).send({ user })
+        res.status(201).send({ user, token:token })
     } catch (e) {
         console.log(e);
         res.status(400).send(e)
