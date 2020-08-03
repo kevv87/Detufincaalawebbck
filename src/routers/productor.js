@@ -42,12 +42,16 @@ router.post('/number', async(req,res)=>{  // INSECURITY HERE
 
 
 router.post('/productores', async (req, res) => {
+  try {
     req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
     req.body.region = await Region.findOne(req.body.region.name)
+    if(!req.body.region){
+      res.status(404).send({reason:"No existe la region "+ req.body.region})
+      return
+    }
     const productor = new Productor(req.body)
     const token = await productor.generateAuthToken()
-    try {
-        await productor.save()
+            await productor.save()
         res.status(201).send({ productor, token:token})
     } catch (e) {
         console.log(e);
@@ -117,6 +121,7 @@ router.get('/productores/me', auth.authProductor, async (req, res) => {
 })
 
 router.patch('/productores/me', auth.authProductor, async (req, res) => {
+  try {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'email', 'password', 'age']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -124,8 +129,6 @@ router.patch('/productores/me', auth.authProductor, async (req, res) => {
     if (!isValidOperation) {
         return res.status(400).send({ error: 'Invalid updates!' })
     }
-
-    try {
         updates.forEach((update) => req.productor[update] = req.body[update])
         await req.productor.save()
         res.send(req.productor)
