@@ -25,15 +25,20 @@ router.get('/usersAll', async (req, res)=>{
 
 // Login, logout y signup
 router.post('/users', async (req, res) => {
-    req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
-    req.body.region = await Region.findOne(req.body.region.name)
-    const user = new User(req.body)
-    const token = await user.generateAuthToken()
-    console.log(user);
-    try {
-        await user.save()
-        sendWelcomeEmail(user.email, user.name)
-        res.status(201).send({ user, token:token })
+    try{
+      req.body.location = utm.convertLatLngToUtm(req.body.location.lat, req.body.location.lng, 100)
+      req.body.region = await Region.findOne(req.body.region.name)
+      if(!req.body.region){
+        res.status(404).send({reason:"Region " + req.body.name + " no existe"})
+        return
+      }
+      const user = new User(req.body)
+      const token = await user.generateAuthToken()
+      console.log(user);
+
+          await user.save()
+          sendWelcomeEmail(user.email, user.name)
+          res.status(201).send({ user, token:token })
     } catch (e) {
         console.log(e);
         res.status(400).send(e)
