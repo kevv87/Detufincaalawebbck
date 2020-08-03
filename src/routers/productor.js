@@ -27,7 +27,7 @@ router.get('/usersAll', async (req, res)=>{
 
 router.post('/number', async(req,res)=>{
   try{
-    const productor = Productor.find({phone:req.phone})
+    const productor = await Productor.find({phone:req.phone})
     if(!productor){
       res.status(404).send()
       return
