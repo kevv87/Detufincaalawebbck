@@ -222,10 +222,7 @@ router.get('/productores/orders', auth.authProductor, async(req,res)=>{
         path:'ordenes',
         match:{state:req.query.state}
       }).execPopulate()
-   }
-   if(!req.user.ordenes){
-     req.user.ordenes = []
-   }
+   } 
     res.status(200).send(req.user.ordenes)
   }catch(e){
     res.status(500).send()
