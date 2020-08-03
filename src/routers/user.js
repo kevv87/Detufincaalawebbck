@@ -179,6 +179,7 @@ router.post('/users/carrito', auth.authUser, async(req,res)=>{
         productorId:productor._id,
         productId:reqStock.productId,
         userId:req.user._id,
+        name:reqStock.name,
         quantity:req.body.items[i].quantity,
         totalPrice:req.body.items[i].quantity*reqStock.price,
         state:"pendingConfirm",
