@@ -75,7 +75,7 @@ router.post('/productores/producto', auth.authProductor, async(req,res)=>{
       }
     });
 
-    if(producto == {}){
+    if(producto.productId == null){
       producto.price = req.body.price
       producto.productId = tipoProducto._id
       producto.name = tipoProducto.name
