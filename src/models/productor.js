@@ -68,6 +68,7 @@ const productorSchema = new mongoose.Schema({
       [{
       price: Number,
       name:String,
+      units:String,
       productId: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'Product',

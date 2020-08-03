@@ -83,6 +83,20 @@ router.get('/products',auth.authUser, async(req,res)=>{  // Retorna lo que hay d
     }
 })
 
+router.get('/productores/allProducts', auth.authProductor, async(req,res)=>{
+  try {
+      const productos = await Product.find({})
+      res.send(productos)
+    } catch (e) {
+      if(e == "No existe el producto"){
+        e = {error:"No existe el producto"}
+        res.status(404).send(e)
+      }else{
+        res.status(500).send()
+      }
+    }
+})
+
 // GET /products?completed=true
 // GET /products?limit=10&skip=20
 // GET /products?sortBy=createdAt:desc

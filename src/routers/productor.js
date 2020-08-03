@@ -66,6 +66,7 @@ router.post('/productores/producto', auth.authProductor, async(req,res)=>{
     producto.price = req.body.price
     producto.productId = tipoProducto._id
     producto.name = tipoProducto.name
+    producto.units = tipoProducto.units
     var stock = req.user.stock
     if(stock == null){
       stock = []

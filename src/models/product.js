@@ -6,6 +6,11 @@ const productSchema = new mongoose.Schema({
       required: true,
       unique:true
     },
+    category:{
+      type:String,
+      required:true
+    }
+    ,
     units:{
       type:String,
       required:true
